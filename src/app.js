@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const contractRoutes = require('./routes/contractRoutes');
+const path = require('path');
+require('dotenv').config();
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,10 +21,10 @@ app.use(express.json());
 app.use(cors());
 
 // Serve static files from the "public" directory
-app.use(express.static('src/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Use topic routes
-app.use('/api/contracts', contractRoutes);
+app.use('/api', contractRoutes);
 
 // Set the port from environment variables or default to 5000
 const PORT = process.env.PORT || 5000;
