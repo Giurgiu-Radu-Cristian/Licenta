@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Dashboard</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Contract Dashboard</h1>
+    <table id="contractTable">
+        <thead>
+            <tr>
+                <th>Contract ID</th>
+                <th>University</th>
+                <th>Counterparty</th>
+                <th>Location</th>
+                <th>Domain</th>
+                <th>Type</th>
+                <th>Purpose</th>
+                <th>Objectives</th>
+                <th>Start Date</th>
+                <th>Duration</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:5000/contracts')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('tableBody');
+                    data.forEach(contract => {
+                        const row = document.createElement('tr');
+                        Object.values(contract).forEach(value => {
+                            const cell = document.createElement('td');
+                            cell.textContent = value;
+                            row.appendChild(cell);
+                        });
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching contracts:', error));
+        });
+    </script>
+</body>
+</html>
