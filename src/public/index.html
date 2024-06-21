@@ -11,10 +11,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/api/contracts')
-                .then(response => response.json())
+            const university = 'abc';
+            fetch(`/api/contracts?university=${encodeURIComponent(university)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log(data); // Log data to ensure it is fetched correctly
                     const contractsDiv = document.getElementById('contracts');
+                    contractsDiv.innerHTML = ''; // Clear any existing content
                     data.forEach(contract => {
                         const contractElement = document.createElement('div');
                         contractElement.textContent = JSON.stringify(contract, null, 2);

@@ -2,15 +2,25 @@ const express = require('express');
 const router = express.Router();
 const Contract = require('../models/Contract');
 
-// Route to fetch all contracts
 router.get('/contracts', async (req, res) => {
     try {
-        const contracts = await Contract.find(); // Fetch all contracts from MongoDB
-        console.log('Fetched contracts:', contracts); // Log fetched contracts
-        res.json(contracts); // Send JSON response with fetched contracts
+        const { university } = req.query;
+        let contracts;
+
+        if (university) {
+            // Use case-insensitive regex search to match 'University' or 'university'
+            contracts = await Contract.find({ $or: [
+                { University: new RegExp(university, 'i') },
+                { university: new RegExp(university, 'i') }
+            ] });
+        } else {
+            contracts = await Contract.find();
+        }
+
+        console.log(contracts); // Log contracts to see what is being returned
+        res.json(contracts);
     } catch (err) {
-        console.error('Error fetching contracts:', err.message); // Log error
-        res.status(500).json({ message: err.message }); // Handle errors
+        res.status(500).json({ message: err.message });
     }
 });
 
