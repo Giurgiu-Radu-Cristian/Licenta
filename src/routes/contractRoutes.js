@@ -8,16 +8,11 @@ router.get('/contracts', async (req, res) => {
         let contracts;
 
         if (university) {
-            // Use case-insensitive regex search to match 'University' or 'university'
-            contracts = await Contract.find({ $or: [
-                { University: new RegExp(university, 'i') },
-                { university: new RegExp(university, 'i') }
-            ] });
+            contracts = await Contract.find({ University: new RegExp(university, 'i') });
         } else {
             contracts = await Contract.find();
         }
 
-        console.log(contracts); // Log contracts to see what is being returned
         res.json(contracts);
     } catch (err) {
         res.status(500).json({ message: err.message });
