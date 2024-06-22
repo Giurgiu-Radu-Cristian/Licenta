@@ -15,6 +15,11 @@
 </head>
 <body>
     <h1>Contracts Map</h1>
+    <label for="universitySelect">Select University:</label>
+    <select id="universitySelect">
+        <option value="all">All</option>
+        <!-- Options will be populated dynamically -->
+    </select>
     <div id="map"></div>
 
     <!-- Leaflet JS -->
@@ -25,7 +30,6 @@
             const northEast = L.latLng(72.0, 45.0);
             const bounds = L.latLngBounds(southWest, northEast);
 
-            // Initialize the map and set view to Europe with a defined zoom level
             const map = L.map('map', {
                 center: [51.505, 10.09], // Centered on Europe
                 zoom: 4,
@@ -34,26 +38,58 @@
                 minZoom: 4 // Set minimum zoom level
             });
 
-            // Add the tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Pan inside the bounds
             map.on('drag', () => {
                 map.panInsideBounds(bounds, { animate: false });
             });
 
-            // Fetch and display contracts data
+            let markers = [];
+
+            // Function to add markers to the map
+            function addMarkers(data) {
+                markers.forEach(marker => marker.remove());
+                markers = [];
+
+                data.forEach(contract => {
+                    const location = contract.counterpartyLocation;
+                    if (location && location.lat && location.lng) {
+                        const marker = L.marker([location.lat, location.lng]).addTo(map);
+                        marker.bindPopup(`<b>${contract.University}</b><br>${contract.counterparty}`);
+                        markers.push(marker);
+                    }
+                });
+            }
+
+            // Fetch contracts data and populate dropdown
             fetch('/api/contracts')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // Log data to ensure it is fetched correctly
-                    data.forEach(contract => {
-                        const location = contract.counterpartyLocation;
-                        if (location && location.lat && location.lng) {
-                            const marker = L.marker([location.lat, location.lng]).addTo(map);
-                            marker.bindPopup(`<b>${contract.University}</b><br>${contract.counterparty}`);
+
+                    // Populate university dropdown
+                    const universitySelect = document.getElementById('universitySelect');
+                    const universities = [...new Set(data.map(contract => contract.University))];
+                    universities.forEach(university => {
+                        const option = document.createElement('option');
+                        option.value = university;
+                        option.textContent = university;
+                        universitySelect.appendChild(option);
+                    });
+
+                    // Add all markers initially
+                    addMarkers(data);
+
+                    // Add event listener to filter markers by university
+                    universitySelect.addEventListener('change', () => {
+                        const selectedUniversity = universitySelect.value;
+                        if (selectedUniversity === 'all') {
+                            addMarkers(data);
+                        } else {
+                            const filteredData = data.filter(contract => contract.University === selectedUniversity);
+                            addMarkers(filteredData);
                         }
                     });
                 })
