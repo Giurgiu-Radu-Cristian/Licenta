@@ -22,3 +22,8 @@ body {
     font-size: 14px;
     color: #666;
 }
+.popup-images img {
+    width: 40px;
+    height: auto;
+    margin: 5px;
+}

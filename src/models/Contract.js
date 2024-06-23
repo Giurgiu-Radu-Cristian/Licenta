@@ -10,6 +10,7 @@ const contractSchema = new mongoose.Schema({
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
     },
+    images: [String],
     counterpartyDomain: { type: String, required: true },
     contractType: { type: String, required: true },
     purpose: { type: String, required: true },

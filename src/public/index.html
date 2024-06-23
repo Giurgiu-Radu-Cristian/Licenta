@@ -6,10 +6,18 @@
     <title>Contracts Map</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <style>
         #map {
             height: 600px;
             width: 100%;
+        }
+        .popup-images img {
+            width: 100px;
+            height: auto;
+            margin: 5px;
         }
     </style>
 </head>
@@ -24,6 +32,8 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const southWest = L.latLng(35.0, -25.0);
@@ -46,21 +56,34 @@
                 map.panInsideBounds(bounds, { animate: false });
             });
 
-            let markers = [];
+            const markers = L.markerClusterGroup({
+                maxClusterRadius: 20 // Set the maximum cluster radius to a small value
+            });
 
             // Function to add markers to the map
             function addMarkers(data) {
-                markers.forEach(marker => marker.remove());
-                markers = [];
+                markers.clearLayers();
 
                 data.forEach(contract => {
                     const location = contract.counterpartyLocation;
                     if (location && location.lat && location.lng) {
-                        const marker = L.marker([location.lat, location.lng]).addTo(map);
-                        marker.bindPopup(`<b>${contract.University}</b><br>${contract.counterparty}`);
-                        markers.push(marker);
+                        const marker = L.marker([location.lat, location.lng]);
+                        let popupContent = `<b>${contract.university}</b><br>${contract.counterparty}`;
+
+                        if (contract.images && contract.images.length > 0) {
+                            popupContent += '<div class="popup-images">';
+                            contract.images.forEach(image => {
+                                popupContent += `<img src="${image}" alt="Image of ${contract.counterparty}">`;
+                            });
+                            popupContent += '</div>';
+                        }
+
+                        marker.bindPopup(popupContent);
+                        markers.addLayer(marker);
                     }
                 });
+
+                map.addLayer(markers); // Add the marker cluster group to the map
             }
 
             // Fetch contracts data and populate dropdown
@@ -71,7 +94,7 @@
 
                     // Populate university dropdown
                     const universitySelect = document.getElementById('universitySelect');
-                    const universities = [...new Set(data.map(contract => contract.University))];
+                    const universities = [...new Set(data.map(contract => contract.university))];
                     universities.forEach(university => {
                         const option = document.createElement('option');
                         option.value = university;
@@ -88,7 +111,7 @@
                         if (selectedUniversity === 'all') {
                             addMarkers(data);
                         } else {
-                            const filteredData = data.filter(contract => contract.University === selectedUniversity);
+                            const filteredData = data.filter(contract => contract.university === selectedUniversity);
                             addMarkers(filteredData);
                         }
                     });
