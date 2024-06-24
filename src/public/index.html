@@ -85,7 +85,7 @@
                     const location = contract.counterpartyLocation;
                     if (location && location.lat && location.lng) {
                         const marker = L.marker([location.lat, location.lng]);
-                        let popupContent = `<b>${contract.university}</b><br>${contract.counterparty}`;
+                        let popupContent = `<b>${contract.university}</b><br>${contract.counterparty}<br>${contract.address || 'No address available'}`;
 
                         if (contract.images && contract.images.length > 0) {
                             popupContent += '<div class="popup-images">';
@@ -102,6 +102,8 @@
                             popupContent += '<span class="next" onclick="plusSlides(1)">Next &#10095;</span>';
                             popupContent += '</div></div>';
                         }
+
+                        popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
 
                         marker.bindPopup(popupContent);
                         markers.addLayer(marker);
@@ -162,6 +164,11 @@
                 slides[i].style.display = "none";
             }
             slides[slideIndex - 1].style.display = "block";
+        }
+
+        function showContractDetails(contractJson) {
+            const contract = JSON.parse(unescape(contractJson));
+            alert(`Contract Details:\n\n${JSON.stringify(contract, null, 2)}`);
         }
 
                   
