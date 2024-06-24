@@ -37,9 +37,9 @@
     <div class="container">
         <label for="universitySelect">Choose a University:</label>
         <select id="universitySelect">
-            <!-- Options will be dynamically populated -->
+       
             <option value="all">All</option>
-            <!-- Options will be populated dynamically -->
+  
         </select>
     </div>
         
@@ -47,9 +47,7 @@
         <div id="map"></div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- Leaflet MarkerCluster JS -->
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -58,11 +56,11 @@
             const bounds = L.latLngBounds(southWest, northEast);
 
             const map = L.map('map', {
-                center: [51.505, 10.09], // Centered on Europe
+                center: [51.505, 10.09], 
                 zoom: 4.5,
-                maxBounds: bounds, // Set bounds to Europe
-                maxZoom: 10, // Set maximum zoom level
-                minZoom: 4 // Set minimum zoom level
+                maxBounds: bounds, 
+                maxZoom: 10, 
+                minZoom: 4 
             });
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -74,7 +72,7 @@
             });
 
             const markers = L.markerClusterGroup({
-                maxClusterRadius: 20 // Set the maximum cluster radius to a small value
+                maxClusterRadius: 20 
             });
 
             // Function to add markers to the map
@@ -90,7 +88,7 @@
                         if (contract.images && contract.images.length > 0) {
                             popupContent += '<div class="popup-images">';
                             contract.images.forEach((image, index) => {
-                                // Display the first image, hide others initially
+                                // Display the first image
                                 if (index === 0) {
                                     popupContent += `<img src="${image}" alt="Image ${index + 1}" class="active">`;
                                 } else {
@@ -110,14 +108,14 @@
                     }
                 });
 
-                map.addLayer(markers); // Add the marker cluster group to the map
+                map.addLayer(markers); 
             }
 
             // Fetch contracts data and populate dropdown
             fetch('/api/contracts')
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); // Log data to ensure it is fetched correctly
+                    console.log(data); 
 
                     // Populate university dropdown
                     const universitySelect = document.getElementById('universitySelect');
