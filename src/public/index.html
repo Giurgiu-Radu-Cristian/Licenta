@@ -79,7 +79,7 @@
             });
 
             const markers = L.markerClusterGroup({
-                maxClusterRadius: 10 
+                maxClusterRadius: 5
             });
 
             // Function to add markers to the map
@@ -192,11 +192,11 @@
             contractDetailsDiv.innerHTML = `
                 <p><strong>University:</strong> ${contract.University}</p>
                 <p><strong>Counterparty:</strong> ${contract.Counterparty}</p>
-                <p><strong>Address:</strong> ${contract.address || 'No address available'}</p>
-                <p><strong>Purpose:</strong> ${contract.Purpose}</p>
-                <p><strong>Objectives:</strong> ${contract.Objectives}</p>
+                <p><strong>Address:</strong> ${contract.address || '-'}</p>
+                <p><strong>Purpose:</strong> ${contract.Purpose || '-'}</p>
+                <p><strong>Objectives:</strong> ${contract.Objectives || '-'}</p>
                 <p><strong>Contract Start Date:</strong> ${contract["Contract Start Date"]}</p>
-                <p><strong>Duration:</strong> ${contract.Duration}</p>
+                <p><strong>Duration:</strong> ${contract.Duration || '-'}</p>
                 <p><strong>Status:</strong> ${statusHTML}</p>
             `;
 
