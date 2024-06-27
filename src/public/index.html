@@ -46,6 +46,13 @@
     <div id="map-container">
         <div id="map"></div>
     </div>
+    <div id="contractModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Contract Details</h2>
+            <div id="contractDetails"></div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -59,7 +66,7 @@
                 center: [51.505, 10.09], 
                 zoom: 4.5,
                 maxBounds: bounds, 
-                maxZoom: 10, 
+                maxZoom: 15, 
                 minZoom: 4 
             });
 
@@ -72,7 +79,7 @@
             });
 
             const markers = L.markerClusterGroup({
-                maxClusterRadius: 20 
+                maxClusterRadius: 10 
             });
 
             // Function to add markers to the map
@@ -80,10 +87,11 @@
                 markers.clearLayers();
 
                 data.forEach(contract => {
-                    const location = contract.counterpartyLocation;
+                    const location = contract['Counterparty location'];
                     if (location && location.lat && location.lng) {
                         const marker = L.marker([location.lat, location.lng]);
-                        let popupContent = `<b>${contract.university}</b><br>${contract.counterparty}<br>${contract.address || 'No address available'}`;
+                        let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+
 
                         if (contract.images && contract.images.length > 0) {
                             popupContent += '<div class="popup-images">';
@@ -119,7 +127,7 @@
 
                     // Populate university dropdown
                     const universitySelect = document.getElementById('universitySelect');
-                    const universities = [...new Set(data.map(contract => contract.university))];
+                    const universities = [...new Set(data.map(contract => contract.University))];
                     universities.forEach(university => {
                         const option = document.createElement('option');
                         option.value = university;
@@ -136,7 +144,7 @@
                         if (selectedUniversity === 'all') {
                             addMarkers(data);
                         } else {
-                            const filteredData = data.filter(contract => contract.university === selectedUniversity);
+                            const filteredData = data.filter(contract => contract.University === selectedUniversity);
                             addMarkers(filteredData);
                         }
                     });
@@ -164,9 +172,48 @@
             slides[slideIndex - 1].style.display = "block";
         }
 
+       
         function showContractDetails(contractJson) {
             const contract = JSON.parse(unescape(contractJson));
-            alert(`Contract Details:\n\n${JSON.stringify(contract, null, 2)}`);
+            const contractDetailsDiv = document.getElementById('contractDetails');
+            let statusColor = '';
+               if (contract.Status === 'active') {
+                    statusColor = 'green';
+                } else if (contract.Status === 'expired') {
+                    statusColor = 'red';
+                }
+                let statusHTML = contract.status;
+             if (statusColor) {
+                    statusHTML = `<span style="background-color: ${statusColor}; color: white; padding: 3px; border-radius: 3px;">${contract.Status}</span>`;
+               }
+
+
+
+            contractDetailsDiv.innerHTML = `
+                <p><strong>University:</strong> ${contract.University}</p>
+                <p><strong>Counterparty:</strong> ${contract.Counterparty}</p>
+                <p><strong>Address:</strong> ${contract.address || 'No address available'}</p>
+                <p><strong>Purpose:</strong> ${contract.Purpose}</p>
+                <p><strong>Objectives:</strong> ${contract.Objectives}</p>
+                <p><strong>Contract Start Date:</strong> ${contract["Contract Start Date"]}</p>
+                <p><strong>Duration:</strong> ${contract.Duration}</p>
+                <p><strong>Status:</strong> ${statusHTML}</p>
+            `;
+
+            const modal = document.getElementById('contractModal');
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('contractModal');
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('contractModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
         }
 
                   
