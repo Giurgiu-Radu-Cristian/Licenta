@@ -12,7 +12,7 @@ const contractSchema = new mongoose.Schema({
     },
     images: [String],
     counterpartyDomain: { type: String, required: true },
-    contractType: { type: String, required: true },
+    "Type of contract": { type: String, required: true },
     Purpose: { type: String, required: true },
     objectives: { type: String, required: true },
     "Contract Start Date": { type: String, required: true },

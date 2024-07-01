@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <!-- jQuery CSS (not needed but included for completeness) -->
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
           
         #map-container {
@@ -34,13 +38,15 @@
 </head>
 <body>
     <h1>Contracts Map</h1>
-    <div class="container">
-        <label for="universitySelect">Choose a University:</label>
-        <select id="universitySelect">
-       
-            <option value="all">All</option>
-  
-        </select>
+    <div id="controls">
+        <label for="universitySelect">Select University:</label>
+        <select id="universitySelect" multiple="multiple"></select>
+        <label for="countrySelect">Select Country:</label>
+        <select id="countrySelect" multiple="multiple"></select>
+        <label for="typeSelect">Select Type of Contract:</label>
+        <select id="typeSelect" multiple="multiple"></select>
+        <label for="purposeSelect">Select Purpose:</label>
+        <select id="purposeSelect" multiple="multiple"></select>
     </div>
         
     <div id="map-container">
@@ -54,6 +60,10 @@
         </div>
     </div>
 
+     <!-- jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
@@ -80,6 +90,12 @@
 
             const markers = L.markerClusterGroup({
                 maxClusterRadius: 5
+            });
+
+             // Initialize Select2 for multiple selections with clearable options
+             $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').select2({
+                multiple: true,
+                allowClear: true
             });
 
             // Function to add markers to the map
@@ -118,35 +134,59 @@
 
                 map.addLayer(markers); 
             }
+            // Function to filter contracts based on selected criteria
+            function filterContracts(data) {
+                const selectedUniversity = $('#universitySelect').val() || [];
+                const selectedCountry = $('#countrySelect').val() || [];
+                const selectedType = $('#typeSelect').val() || [];
+                const selectedPurpose = $('#purposeSelect').val() || [];
 
-            // Fetch contracts data and populate dropdown
+                return data.filter(contract => {
+                    return (selectedUniversity.length === 0 || selectedUniversity.includes(contract.University)) &&
+                           (selectedCountry.length === 0 || selectedCountry.includes(contract.Country)) &&
+                           (selectedType.length === 0 || selectedType.includes(contract["Type of contract"])) &&
+                           (selectedPurpose.length === 0 || selectedPurpose.includes(contract.Purpose));
+                });
+            }
+
+            // Fetch contracts data and populate dropdowns
             fetch('/api/contracts')
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); 
-
-                    // Populate university dropdown
-                    const universitySelect = document.getElementById('universitySelect');
+                    const universitySelect = $('#universitySelect');
                     const universities = [...new Set(data.map(contract => contract.University))];
                     universities.forEach(university => {
-                        const option = document.createElement('option');
-                        option.value = university;
-                        option.textContent = university;
-                        universitySelect.appendChild(option);
+                        const option = new Option(university, university);
+                        universitySelect.append(option);
                     });
 
-                    // Add all markers initially
+                    const countrySelect = $('#countrySelect');
+                    const countries = [...new Set(data.map(contract => contract.Country))];
+                    countries.forEach(country => {
+                        const option = new Option(country, country);
+                        countrySelect.append(option);
+                    });
+
+                    const typeSelect = $('#typeSelect');
+                    const types = [...new Set(data.map(contract => contract["Type of contract"]))];
+                    types.forEach(type => {
+                        const option = new Option(type, type);
+                        typeSelect.append(option);
+                    });
+
+                    const purposeSelect = $('#purposeSelect');
+                    const purposes = [...new Set(data.map(contract => contract.Purpose))];
+                    purposes.forEach(purpose => {
+                        const option = new Option(purpose, purpose);
+                        purposeSelect.append(option);
+                    });
+
                     addMarkers(data);
 
-                    // Add event listener to filter markers by university
-                    universitySelect.addEventListener('change', () => {
-                        const selectedUniversity = universitySelect.value;
-                        if (selectedUniversity === 'all') {
-                            addMarkers(data);
-                        } else {
-                            const filteredData = data.filter(contract => contract.University === selectedUniversity);
-                            addMarkers(filteredData);
-                        }
+                    // Event listener for dropdown changes
+                    $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').on('change', () => {
+                        const filteredData = filterContracts(data);
+                        addMarkers(filteredData);
                     });
                 })
                 .catch(error => console.error('Error fetching contracts:', error));
