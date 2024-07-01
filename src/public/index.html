@@ -37,7 +37,24 @@
     </style>
 </head>
 <body>
+
+    <header>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="index.html">Platform</a>
+        </nav>
+    </header>
+    
+
     <h1>Contracts Map</h1>
+
+    <div id="controlHeat">
+        <label for="heatmapToggle">Show Heatmap</label>
+        <input type="checkbox" id="heatmapToggle" checked>
+    </div>
+    
     <div id="controls">
         <label for="universitySelect">Select University:</label>
         <select id="universitySelect" multiple="multiple"></select>
@@ -66,19 +83,22 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const southWest = L.latLng(35.0, -25.0);
             const northEast = L.latLng(72.0, 45.0);
             const bounds = L.latLngBounds(southWest, northEast);
+            
 
             const map = L.map('map', {
                 center: [51.505, 10.09], 
                 zoom: 4.5,
                 maxBounds: bounds, 
                 maxZoom: 15, 
-                minZoom: 4 
+                minZoom: 1 
             });
+           
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -87,6 +107,59 @@
             map.on('drag', () => {
                 map.panInsideBounds(bounds, { animate: false });
             });
+
+            const heatmapData = [
+                [52.52, 13.405, 1],   // Berlin, Germany
+                [48.8566, 2.3522, 1], // Paris, France
+                [51.5074, -0.1278, 1],// London, UK
+                [41.9028, 12.4964, 1],// Rome, Italy
+                [40.4168, -3.7038, 1],// Madrid, Spain
+                [50.1109, 8.6821, 1], // Frankfurt, Germany
+                [45.4654, 9.1859, 1], // Milan, Italy
+                [55.7558, 37.6173, 1],// Moscow, Russia
+                [52.2297, 21.0122, 1],// Warsaw, Poland
+                [48.2082, 16.3738, 1],// Vienna, Austria
+                [59.3293, 18.0686, 1],// Stockholm, Sweden
+                [60.1699, 24.9384, 1],// Helsinki, Finland
+                [37.9838, 23.7275, 1],// Athens, Greece
+                [53.3498, -6.2603, 1],// Dublin, Ireland
+                [52.3667, 4.8945, 1], // Amsterdam, Netherlands
+                [50.8503, 4.3517, 1], // Brussels, Belgium
+                [47.4979, 19.0402, 1],// Budapest, Hungary
+                [42.6977, 23.3219, 1],// Sofia, Bulgaria
+                [45.8150, 15.9819, 1],// Zagreb, Croatia
+                [41.3275, 19.8187, 1],// Tirana, Albania
+            ];
+
+            const heatmapLayer = L.heatLayer(heatmapData, {
+                radius: 70, // Increased radius for more visibility
+                blur: 80,   // Increased blur for more spread
+                maxZoom: 10,
+                gradient: {
+                    0.1: 'blue',
+                    0.3: 'lime',
+                    0.5: 'yellow',
+                    0.7: 'orange',
+                    1.0: 'red'
+                },
+                minOpacity: 0.5 // Increased opacity for more visibility
+            });
+
+            // Add heatmap layer to the map initially
+            heatmapLayer.addTo(map);
+
+            // Toggle checkbox functionality
+            const heatmapToggleCheckbox = document.getElementById('heatmapToggle');
+
+            heatmapToggleCheckbox.addEventListener('change', () => {
+                if (heatmapToggleCheckbox.checked) {
+                    heatmapLayer.addTo(map);
+                } else {
+                    map.removeLayer(heatmapLayer);
+                }
+            });
+        
+        
 
             const markers = L.markerClusterGroup({
                 maxClusterRadius: 5
@@ -191,6 +264,7 @@
                 })
                 .catch(error => console.error('Error fetching contracts:', error));
         });
+        
 
         let slideIndex = 1;
 
