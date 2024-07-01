@@ -8,13 +8,23 @@
 }
 
 #header {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: rgba(239,193,51,255);
+    text-align: right;
+    padding: 10px;
+    background-color: rgba(25, 55, 130, 1);
     font-size: 24px;
     flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between; /* Align items with space between them */
+    align-items: center; /* Center items vertically */
+}
+#header a {
+    color: rgba(239, 193, 51, 1);
+    /* Other styles */
+}
+
+#header-title{
+   left: 10px;
 }
 
 #main {
@@ -141,7 +151,7 @@ select {
 
 #sidebar {
     width: 300px;
-    background-color: #f8f9fa;
+    background-color: rgba(25, 55, 130, 1);
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Ensure sidebar is on top */
