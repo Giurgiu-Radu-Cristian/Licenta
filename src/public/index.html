@@ -12,21 +12,7 @@
     <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-          
-        #map-container {
-            border: 5px solid black; 
-            padding: 0; 
-            display: inline-block; 
-            box-sizing: border-box; 
-            margin: 10px;
-        }
-
-        #map {
-            height: 700px;
-            width: 1500px;
-            border: 5px solid red;
-        }
+    <style> 
 
         .popup-images img {
             width: 200px; 
@@ -38,44 +24,67 @@
 </head>
 <body>
 
-    <header>
+    <div id="header">
+    
         <nav>
             <a href="home.html">Home</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
             <a href="index.html">Platform</a>
         </nav>
-    </header>
+    </div>
     
 
     <h1>Contracts Map</h1>
 
-    <div id="controlHeat">
-        <label for="heatmapToggle">Show Heatmap</label>
-        <input type="checkbox" id="heatmapToggle" checked>
-    </div>
-    
-    <div id="controls">
-        <label for="universitySelect">Select University:</label>
-        <select id="universitySelect" multiple="multiple"></select>
-        <label for="countrySelect">Select Country:</label>
-        <select id="countrySelect" multiple="multiple"></select>
-        <label for="typeSelect">Select Type of Contract:</label>
-        <select id="typeSelect" multiple="multiple"></select>
-        <label for="purposeSelect">Select Purpose:</label>
-        <select id="purposeSelect" multiple="multiple"></select>
-    </div>
-        
-    <div id="map-container">
-        <div id="map"></div>
-    </div>
-    <div id="contractModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Contract Details</h2>
-            <div id="contractDetails"></div>
+    <div id="main">
+        <div id="sidebar">
+            <h2>Filters</h2>
+            <div class="filter-container">
+                <label for="universitySelect">Select University:</label>
+                <select id="universitySelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="countrySelect">Select Country:</label>
+                <select id="countrySelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="typeSelect">Select Contract Type:</label>
+                <select id="typeSelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="purposeSelect">Select Purpose:</label>
+                <select id="purposeSelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="heatmapToggle">Show Heatmap</label>
+                <input type="checkbox" id="heatmapToggle" checked>
+            </div>
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+        <div id="contractModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Contract Details</h2>
+                <div id="contractDetails"></div>
+            </div>
         </div>
     </div>
+    
 
      <!-- jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -96,7 +105,7 @@
                 zoom: 4.5,
                 maxBounds: bounds, 
                 maxZoom: 15, 
-                minZoom: 1 
+                minZoom: 4 
             });
            
 

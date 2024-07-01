@@ -1,10 +1,27 @@
  body {
     background-image: url('https://img.freepik.com/free-vector/geometric-background_53876-115941.jpg?t=st=1719165149~exp=1719168749~hmac=6edf9551457418c3e4a25d3509cc951a2f7b91035555485c152e772b851987d3&w=1380'); 
-    background-size: cover; 
-    background-position: center; 
-    background-color: #8a3838;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
+#header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    flex: 0 0 auto;
+}
+
+#main {
+    display: flex;
+    flex: 1;
+    overflow: hidden; /* Ensure content does not overflow */
+}
 
 .contract {
     padding: 10px;
@@ -121,14 +138,48 @@ select {
     text-decoration: none;
     cursor: pointer;
 }
-#controlHeat {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    z-index: 1000; /* Ensure the controls are above the map */
-    background: white;
+
+#sidebar {
+    width: 300px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure sidebar is on top */
+    position: relative;
+}
+
+
+#sidebar h2 {
+    margin-top: 0;
+}
+
+#map-container {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    height: 100%;
+}
+
+.filter-container {
+    background-color: white;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+.filter-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.filter-container select {
+    width: 100%;
+    padding: 5px;
+}
+
+.filter-container input[type="checkbox"] {
+    margin-right: 5px;
 }
