@@ -74,9 +74,11 @@
                 <label for="heatmapToggle">Show Heatmap</label>
                 <input type="checkbox" id="heatmapToggle" checked>
             </div>
+            <button id="groupButton">Group by Purpose</button>
         </div>
         <div id="map-container">
             <div id="map"></div>
+            <div class="contracts-count" id="contractsCount">Loading...</div>
         </div>
         <div id="contractModal" class="modal">
             <div class="modal-content">
@@ -93,8 +95,8 @@
      <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const southWest = L.latLng(35.0, -25.0);
@@ -173,14 +175,16 @@
         
 
             const markers = L.markerClusterGroup({
-                maxClusterRadius: 5
+                maxClusterRadius: 20
             });
+
 
              // Initialize Select2 for multiple selections with clearable options
              $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').select2({
                 multiple: true,
                 allowClear: true
             });
+                   
 
             // Function to add markers to the map
             function addMarkers(data) {
@@ -265,17 +269,23 @@
                         purposeSelect.append(option);
                     });
 
-                    addMarkers(data);
+                    addMarkers(data);''
+
+                   
+                    // Calculate and display total contracts count
+                    const totalCount = data.length;
+                    document.getElementById('contractsCount').textContent = `Total Contracts: ${totalCount}`;
 
                     // Event listener for dropdown changes
                     $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').on('change', () => {
                         const filteredData = filterContracts(data);
                         addMarkers(filteredData);
                     });
+                   
                 })
-                .catch(error => console.error('Error fetching contracts:', error));
+           
         });
-        
+
 
         let slideIndex = 1;
 
@@ -307,7 +317,7 @@
                 } else if (contract.Status === 'expired') {
                     statusColor = 'red';
                 }
-                let statusHTML = contract.status;
+                let statusHTML = contract.Status;
              if (statusColor) {
                     statusHTML = `<span style="background-color: ${statusColor}; color: white; padding: 3px; border-radius: 3px;">${contract.Status}</span>`;
                }
@@ -322,6 +332,7 @@
                 <p><strong>Objectives:</strong> ${contract.Objectives || '-'}</p>
                 <p><strong>Contract Start Date:</strong> ${contract["Contract Start Date"]}</p>
                 <p><strong>Duration:</strong> ${contract.Duration || '-'}</p>
+                <p><strong>Type of contract:</strong> ${contract["Type of contract"] || '-'}</p>
                 <p><strong>Status:</strong> ${statusHTML}</p>
             `;
 
