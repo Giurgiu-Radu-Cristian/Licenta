@@ -3,28 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Page</title>
-    <!-- Add any CSS specific to the About page -->
+    <title>Contracts Map</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <!-- jQuery CSS (not needed but included for completeness) -->
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style> 
+
+        .popup-images img {
+            width: 200px; 
+            height: auto;
+            margin: 5px;
+        }
+        
+    </style>
 </head>
 <body>
-    <body>
 
-        <div id="header">
-    
-            <div id="header-title">
-                <h2>Eut+ Quadruple helix partners</h2>
-            </div>
-        
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-                <a href="index.html">Platform</a>
-            </nav>
+    <div id="header">
+
+        <div id="header-title">
+            <h2>Eut+ Quadruple helix partners</h2>
         </div>
-    <h1>Contact Page</h1>
-    <!-- Add content for the About page -->
-    <p>This is the Contact page content.</p>
+    
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="index.html">Platform</a>
+        </nav>
+    </div>
+    
+
+    <div id="main">
+        <div id="sidebar">
+            <h2>Filters</h2>
+            <div class="filter-container">
+                <label for="universitySelect">Select University:</label>
+                <select id="universitySelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="countrySelect">Select Country:</label>
+                <select id="countrySelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="typeSelect">Select Contract Type:</label>
+                <select id="typeSelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="purposeSelect">Select Purpose:</label>
+                <select id="purposeSelect" multiple>
+                    <option value="all">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="heatmapToggle">Show Heatmap</label>
+                <input type="checkbox" id="heatmapToggle" checked>
+            </div>
+            <label>
+                <input type="checkbox" id="clusterToggle" /> Group by Objectives
+            </label>
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+            <div class="contracts-count" id="contractsCount">Loading...</div>
+        </div>
+        <div id="contractModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Contract Details</h2>
+                <div id="contractDetails"></div>
+            </div>
+        </div>
+    </div>
+    
+
+     <!-- jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const southWest = L.latLng(35.0, -25.0);
+            const northEast = L.latLng(72.0, 45.0);
+            const bounds = L.latLngBounds(southWest, northEast);
+            
+
+            const map = L.map('map', {
+                center: [51.505, 10.09], 
+                zoom: 4.5,
+                maxBounds: bounds, 
+                maxZoom: 15, 
+                minZoom: 4 
+            });
+           
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            map.on('drag', () => {
+                map.panInsideBounds(bounds, { animate: false });
+            });
+
+            const heatmapData = [
+                [52.52, 13.405, 1],   // Berlin, Germany
+                [48.8566, 2.3522, 1], // Paris, France
+                [51.5074, -0.1278, 1],// London, UK
+                [41.9028, 12.4964, 1],// Rome, Italy
+                [40.4168, -3.7038, 1],// Madrid, Spain
+                [50.1109, 8.6821, 1], // Frankfurt, Germany
+                [45.4654, 9.1859, 1], // Milan, Italy
+                [55.7558, 37.6173, 1],// Moscow, Russia
+                [52.2297, 21.0122, 1],// Warsaw, Poland
+                [48.2082, 16.3738, 1],// Vienna, Austria
+                [59.3293, 18.0686, 1],// Stockholm, Sweden
+                [60.1699, 24.9384, 1],// Helsinki, Finland
+                [37.9838, 23.7275, 1],// Athens, Greece
+                [53.3498, -6.2603, 1],// Dublin, Ireland
+                [52.3667, 4.8945, 1], // Amsterdam, Netherlands
+                [50.8503, 4.3517, 1], // Brussels, Belgium
+                [47.4979, 19.0402, 1],// Budapest, Hungary
+                [42.6977, 23.3219, 1],// Sofia, Bulgaria
+                [45.8150, 15.9819, 1],// Zagreb, Croatia
+                [41.3275, 19.8187, 1],// Tirana, Albania
+            ];
+
+            const heatmapLayer = L.heatLayer(heatmapData, {
+                radius: 70, // Increased radius for more visibility
+                blur: 80,   // Increased blur for more spread
+                maxZoom: 10,
+                gradient: {
+                    0.1: 'blue',
+                    0.3: 'lime',
+                    0.5: 'yellow',
+                    0.7: 'orange',
+                    1.0: 'red'
+                },
+                minOpacity: 0.5 // Increased opacity for more visibility
+            });
+
+            // Add heatmap layer to the map initially
+            heatmapLayer.addTo(map);
+
+            // Toggle checkbox functionality
+            const heatmapToggleCheckbox = document.getElementById('heatmapToggle');
+
+            heatmapToggleCheckbox.addEventListener('change', () => {
+                if (heatmapToggleCheckbox.checked) {
+                    heatmapLayer.addTo(map);
+                } else {
+                    map.removeLayer(heatmapLayer);
+                }
+            });
+        
+        
+
+            let markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+
+
+             // Initialize Select2 for multiple selections with clearable options
+             $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').select2({
+                multiple: true,
+                allowClear: true
+            });
+                   
+
+           
+
+            // Function to add markers to the map
+            function addMarkers(data, useClustering) {
+                markers.clearLayers();
+                
+
+                data.forEach(contract => {
+                    const location = contract['Counterparty location'];
+                    if (location && location.lat && location.lng) {
+                        const marker = L.marker([location.lat, location.lng]);
+                        let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+
+
+                        if (contract.images && contract.images.length > 0) {
+                            popupContent += '<div class="popup-images">';
+                            contract.images.forEach((image, index) => {
+                                // Display the first image
+                                if (index === 0) {
+                                    popupContent += `<img src="${image}" alt="Image ${index + 1}" class="active">`;
+                                } else {
+                                    popupContent += `<img src="${image}" alt="Image ${index + 1}">`;
+                                }
+                            });
+                            popupContent += '<div class="slideshow-controls">';
+                            popupContent += '<span class="prev" onclick="plusSlides(-1)">&#10094; Prev</span>';
+                            popupContent += '<span class="next" onclick="plusSlides(1)">Next &#10095;</span>';
+                            popupContent += '</div></div>';
+                        }
+
+                        popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+
+                        marker.bindPopup(popupContent);
+                        markers.addLayer(marker);
+                    }
+                });
+
+                map.addLayer(markers); 
+
+                if (useClustering) {
+            // Clear existing markers and marker clusters
+            map.removeLayer(markers);
+            markers.clearLayers();
+
+            // Group contracts by objectives
+            const groupedContracts = data.reduce((acc, contract) => {
+                const objective = contract.Objectives || 'No Objectives';
+                if (!acc[objective]) {
+                    acc[objective] = [];
+                }
+                acc[objective].push(contract);
+                return acc;
+            }, {});
+
+            // Add markers to respective clusters
+            Object.keys(groupedContracts).forEach(objective => {
+                groupedContracts[objective].forEach(contract => {
+                    const location = contract['Counterparty location'];
+                    if (location && location.lat && location.lng) {
+                        const marker = L.marker([location.lat, location.lng]);
+                        let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+                        popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+                        marker.bindPopup(popupContent);
+                        markers.addLayer(marker);
+                    }
+                });
+            });
+
+            // Add marker cluster group to map
+            map.addLayer(markers);
+        } else {
+            // Clear existing markers and marker clusters
+            map.removeLayer(markers);
+            markers.clearLayers();
+
+            // Add plain markers to the map
+            data.forEach(contract => {
+                const location = contract['Counterparty location'];
+                if (location && location.lat && location.lng) {
+                    const marker = L.marker([location.lat, location.lng]);
+                    let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+                    popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+                    marker.bindPopup(popupContent);
+                    map.addLayer(marker);
+                }
+            });
+        }
+    }
+           
+            // Function to filter contracts based on selected criteria
+            function filterContracts(data) {
+                const selectedUniversity = $('#universitySelect').val() || [];
+                const selectedCountry = $('#countrySelect').val() || [];
+                const selectedType = $('#typeSelect').val() || [];
+                const selectedPurpose = $('#purposeSelect').val() || [];
+
+                return data.filter(contract => {
+                    return (selectedUniversity.length === 0 || selectedUniversity.includes(contract.University)) &&
+                           (selectedCountry.length === 0 || selectedCountry.includes(contract.Country)) &&
+                           (selectedType.length === 0 || selectedType.includes(contract["Type of contract"])) &&
+                           (selectedPurpose.length === 0 || selectedPurpose.includes(contract.Purpose));
+                });
+            }
+
+            // Fetch contracts data and populate dropdowns
+            fetch('/api/contracts')
+                .then(response => response.json())
+                .then(data => {
+                    const universitySelect = $('#universitySelect');
+                    const universities = [...new Set(data.map(contract => contract.University))];
+                    universities.forEach(university => {
+                        const option = new Option(university, university);
+                        universitySelect.append(option);
+                    });
+
+                    const countrySelect = $('#countrySelect');
+                    const countries = [...new Set(data.map(contract => contract.Country))];
+                    countries.forEach(country => {
+                        const option = new Option(country, country);
+                        countrySelect.append(option);
+                    });
+
+                    const typeSelect = $('#typeSelect');
+                    const types = [...new Set(data.map(contract => contract["Type of contract"]))];
+                    types.forEach(type => {
+                        const option = new Option(type, type);
+                        typeSelect.append(option);
+                    });
+
+                    const purposeSelect = $('#purposeSelect');
+                    const purposes = [...new Set(data.map(contract => contract.Purpose))];
+                    purposes.forEach(purpose => {
+                        const option = new Option(purpose, purpose);
+                        purposeSelect.append(option);
+                    });
+
+                    addMarkers(data);''
+
+                    document.getElementById('clusterToggle').addEventListener('change', (event) => {
+                const useClustering = event.target.checked;
+                addMarkers(data, useClustering); // Add markers based on clustering option
+            });
+
+                   
+                    // Calculate and display total contracts count
+                    const totalCount = data.length;
+                    document.getElementById('contractsCount').textContent = `Total Contracts: ${totalCount}`;
+
+                    // Event listener for dropdown changes
+                    $('#universitySelect, #countrySelect, #typeSelect, #purposeSelect').on('change', () => {
+                        const filteredData = filterContracts(data);
+                        addMarkers(filteredData);
+                    });
+                   
+                })
+           
+        });
+        window.showContractDetails = function(contractJson) {
+        const contract = JSON.parse(unescape(contractJson));
+        alert(`Showing details for contract with ${contract.Counterparty}`);
+    };
+
+
+        let slideIndex = 1;
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            const slides = document.getElementsByClassName("popup-images")[0].getElementsByTagName("img");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+       
+        function showContractDetails(contractJson) {
+            const contract = JSON.parse(unescape(contractJson));
+            const contractDetailsDiv = document.getElementById('contractDetails');
+            let statusColor = '';
+               if (contract.Status === 'active') {
+                    statusColor = 'green';
+                } else if (contract.Status === 'expired') {
+                    statusColor = 'red';
+                }
+                let statusHTML = contract.Status;
+             if (statusColor) {
+                    statusHTML = `<span style="background-color: ${statusColor}; color: white; padding: 3px; border-radius: 3px;">${contract.Status}</span>`;
+               }
+
+
+
+            contractDetailsDiv.innerHTML = `
+                <p><strong>University:</strong> ${contract.University}</p>
+                <p><strong>Counterparty:</strong> ${contract.Counterparty}</p>
+                <p><strong>Address:</strong> ${contract.address || '-'}</p>
+                <p><strong>Purpose:</strong> ${contract.Purpose || '-'}</p>
+                <p><strong>Objectives:</strong> ${contract.Objectives || '-'}</p>
+                <p><strong>Contract Start Date:</strong> ${contract["Contract Start Date"]}</p>
+                <p><strong>Duration:</strong> ${contract.Duration || '-'}</p>
+                <p><strong>Type of contract:</strong> ${contract["Type of contract"] || '-'}</p>
+                <p><strong>Status:</strong> ${statusHTML}</p>
+            `;
+
+            const modal = document.getElementById('contractModal');
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('contractModal');
+            modal.style.display = "none";
+        }
+
+       
+
+                  
+    </script>
+ 
 </body>
 </html>

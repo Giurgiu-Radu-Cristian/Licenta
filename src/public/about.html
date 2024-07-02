@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Page</title>
-    <!-- Add any CSS specific to the About page -->
-    <link rel="stylesheet" href="styles.css" />
+    <title>Contracts Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <style>
+        #map {
+            height: 600px;
+        }
+        .contracts-count {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,9 +37,103 @@
             <a href="index.html">Platform</a>
         </nav>
     </div>
-    
-    <h1>About Page</h1>
-    <!-- Add content for the About page -->
-    <p>This is the About page content.</p>
+    <div id="map"></div>
+    <div class="contracts-count">
+        <label>
+            <input type="checkbox" id="clusterToggle" /> Group by Objectives
+        </label>
+        <div id="contractsCount">Loading...</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the map
+            const map = L.map('map').setView([51.505, 10.09], 4.5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            let clusterGroups = {};
+            let plainMarkers = L.layerGroup();
+
+            // Function to add markers to the map
+            function addMarkers(data, useClustering) {
+                for (const key in clusterGroups) {
+                    clusterGroups[key].clearLayers();
+                }
+                plainMarkers.clearLayers();
+
+                const groupedContracts = data.reduce((acc, contract) => {
+                    const objective = contract.Objectives || 'No Objectives';
+                    if (!acc[objective]) {
+                        acc[objective] = [];
+                    }
+                    acc[objective].push(contract);
+                    return acc;
+                }, {});
+
+                Object.keys(groupedContracts).forEach(objective => {
+                    if (!clusterGroups[objective]) {
+                        clusterGroups[objective] = L.markerClusterGroup();
+                    }
+                    groupedContracts[objective].forEach(contract => {
+                        const location = contract['Counterparty location'];
+                        if (location && location.lat && location.lng) {
+                            const marker = L.marker([location.lat, location.lng]);
+                            let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+                            popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+                            marker.bindPopup(popupContent);
+
+                            if (useClustering) {
+                                clusterGroups[objective].addLayer(marker);
+                            } else {
+                                plainMarkers.addLayer(marker);
+                            }
+                        }
+                    });
+
+                    if (useClustering) {
+                        map.addLayer(clusterGroups[objective]);
+                    }
+                });
+
+                if (!useClustering) {
+                    map.addLayer(plainMarkers);
+                }
+            }
+
+            // Fetch contracts data and populate map
+            fetch('/api/contracts')
+                .then(response => response.json())
+                .then(data => {
+                    addMarkers(data, false);
+
+                    const totalCount = data.length;
+                    document.getElementById('contractsCount').textContent = `Total Contracts: ${totalCount}`;
+
+                    // Event listener for checkbox change
+                    document.getElementById('clusterToggle').addEventListener('change', (event) => {
+                        const useClustering = event.target.checked;
+                        if (useClustering) {
+                            map.removeLayer(plainMarkers);
+                            addMarkers(data, true);
+                        } else {
+                            for (const key in clusterGroups) {
+                                map.removeLayer(clusterGroups[key]);
+                            }
+                            addMarkers(data, false);
+                        }
+                    });
+                });
+
+            // Dummy function for contract details modal
+            window.showContractDetails = function(contractJson) {
+                const contract = JSON.parse(unescape(contractJson));
+                alert(`Showing details for contract with ${contract.Counterparty}`);
+            };
+        });
+    </script>
 </body>
 </html>

@@ -74,7 +74,9 @@
                 <label for="heatmapToggle">Show Heatmap</label>
                 <input type="checkbox" id="heatmapToggle" checked>
             </div>
-            <button id="groupButton">Group by Purpose</button>
+            <label>
+                <input type="checkbox" id="clusterToggle" /> Group by Objectives
+            </label>
         </div>
         <div id="map-container">
             <div id="map"></div>
@@ -175,7 +177,7 @@
         
 
             const markers = L.markerClusterGroup({
-                maxClusterRadius: 20
+                maxClusterRadius: 2
             });
 
 
@@ -354,5 +356,6 @@
 
                   
     </script>
+ 
 </body>
 </html>
