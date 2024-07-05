@@ -4,11 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
-    <!-- Add any CSS specific to the About page -->
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <style>
+          body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+    
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .half {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .half.left {
+            position: relative;
+            overflow: hidden;
+        }
+        .half.left img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px; 
+            right: 20px; 
+            background-color: rgba(25, 55, 130, 0.7);
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .overlay p {
+            margin-bottom: 10px;
+        }
+        .overlay .button {
+            padding: 10px 20px;
+            background-color: rgb(187, 142, 9);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: block; 
+            margin: 0 auto; 
+            width: 20%;
+        }
+        .overlay .button:hover {
+            background-color: rgba(25, 55, 130, 1);
+        }
+        .half.right {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: #f0f0f0;
+        }
+        .paragraph {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column; 
+            justify-content: space-between; 
+            position: relative; 
+        }
+        .paragraph .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: rgba(25, 55, 130, 1);
+            margin-bottom: 10px;
+        }
+        .paragraph .content {
+            display: flex;
+            flex-direction: column; 
+            flex: 1;
+        }
+        
+        .paragraph img {
+            max-width: 50%; 
+            align-self: flex-end; 
+            margin-left: auto; 
+            margin-top: 10px; 
+            border-radius: 5px;
+        }
+        .paragraph .button {
+            padding: 10px 20px;
+            background-color: rgba(25, 55, 130, 1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            align-self: flex-start; 
+            margin-top: auto; 
+        }
+        .paragraph .button:hover {
+            background-color: rgba(239, 193, 51, 1);
+        }
+        footer {
+            background-color: rgba(25, 55, 130, 1);
+            padding: 10px 0;
+            flex: 1;
+            text-align: left; 
+            margin-left: 20px;
+        }
+        footer img{
+            max-width: 150px;
+            height: auto; 
+            
+        }
+    </style>
 </head>
 <body>
     <div id="header">
@@ -38,8 +159,37 @@
 });
 
     </script>
-    <h1>Home Page</h1>
-    <!-- Add content for the About page -->
-    <p>This is the Home page content.</p>
+     <div class="content">
+        <div class="half left">
+            <img src="map_display.png" alt="Placeholder Image">
+            <div class="overlay">
+                <h2 class="titleOverlay">Interactive Platform</h2>
+                <p>This platform is a tool aimed at presenting and facilitating the interactive exploration of research and innovation capacities of the 8 EUt+ universities. Thanks to topic modeling it groups together documents that deal with similar thematics, allowing to see R&I overlaps between partners, paving the way for further collaboration.</p>
+                <a href="index.html" class="button">Explore the platform</a>
+            </div>
+        </div>
+        <div class="half right">
+            <div class="paragraph">
+                <div>
+                    <h2 class="title">EUt+ R&I mapping slide deck</h2>
+                    <p>A slide deck providing an in-depth analysis of the R&I portfolio of EUt+ as a whole, with focus on distinctive capacities, internal and external collaborations, and the alignment of research and innovation with societal challenges and territorial priorities.</p>
+                </div>
+                <img src="https://researchinformation.univ-tech.eu/static/media/slide-deck-copertina-landscape.abc8899f64cd2cc55a7d.png" alt="Image 1">
+                <a href="https://researchinformation.univ-tech.eu/static/media/EUt+%20R&I%20mapping%20slide%20deck.4b5249620a896702688a.pdf" class="button">Read</a>
+            </div>
+            <div class="paragraph">
+                <div>
+                    <h2 class="title">Institutional R&I mapping slide decks</h2>
+                    <p>The institutional slide decks present key charts and descriptive visualizations of the research and innovation activities of each EUt+ member, It is based on the EUt+ mapping slide deck, with the same data sources and similar analysis.</p>
+                </div>
+                <img src="https://researchinformation.univ-tech.eu/static/media/collaborations-slide-deck.163ea1c896323d3042f1.png" alt="Image 2">
+                <a href="slide_deck.html" class="button">Read</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <img src="data:image/png;base64,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" class="logo-footer" alt="my logo" />
+    </footer>
+
 </body>
 </html>

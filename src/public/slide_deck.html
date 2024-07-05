@@ -8,50 +8,103 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Title, Image, Paragraph, and List</title>
     <style>
-         .popup-images {
-            display: flex;
-            margin-top: 20px;
-        }
-        .popup-images img {
-            width: 150px;
-            height: auto;
-            margin: 10px;
-        }
-
-       
-        #header a.nav-link {
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-        }
-
-        #header a.nav-link.current {
-            color: orange;
-        }
-    
         body {
-        margin: 0;
-        font-family: Fira Sans,Roboto,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh; 
-        background-color: #ecf0f1; 
-
+            background-image: url('https://h-da.de/fileadmin/_processed_/c/8/csm_mapa-grande__bea_13890cd5b9.jpg'); 
+            font-family: Fira Sans,Roboto,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+            margin: 0;
+            padding: 0;
         }
-
-        .containerAbout {
+        
+        .main-content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 1000px; 
-            width: 100%;
+            flex-wrap: wrap;
             padding: 20px;
-            margin: auto; 
-            box-sizing: border-box;
         }
+        .main-content .image {
+            background-color: rgba(25, 55, 130, 1);
+            flex: 1 1 60%;
+            max-width: 60%;
+            margin-right: 20px;
+            border: 5px solid rgba(239, 193, 51, 1);; 
+            border-radius: 7px;
+        }
+        .main-content .image img {
+            width: 100%;
+            height: auto;
+        }
+        .main-content .text {
+            flex: 1 1 40%;
+            max-width: 40%;
+            background-color: rgba(0,32,165,255);
+            color: #fff;
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 18px; 
+            padding-left: 20px;
+            border-top: 5px solid rgba(239, 193, 51, 1);
+            border-left: 5px solid rgba(239, 193, 51, 1);
+            border-bottom: 5px solid rgba(239, 193, 51, 1);
+            border-right: none; 
 
+        }
+        .main-content .text2 {
+            flex: 1 1 40%;
+            max-width: 40%;
+            background-color: rgba(0,32,165,255);
+            color: #fff;
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 25px; 
+            border-top: 5px solid rgba(239, 193, 51, 1);
+            border-left: none;
+            border-bottom: 5px solid rgba(239, 193, 51, 1);
+            border-right: 5px solid rgba(239, 193, 51, 1);
+        }
+        .main-content .text p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-size: 25px; 
+        }
+        .list {
+            padding: 20px;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            border: 5px solid rgba(25, 55, 130, 1);
+            border-radius: 7px;
+            
+        }
+        .list-item img {
+            max-width: 100px;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .list-item .content {
+            flex: 1;
+            padding-left: 20px;
+        }
+        .list-item .content p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .list-item .content .button {
+            padding: 10px 20px;
+            background-color: rgba(25, 55, 130, 1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .list-item .content .button:hover {
+            background-color: rgba(239, 193, 51, 1);
+        }
         .title-section {
             background-color: rgba(25, 55, 130, 1);
             color: #fff;
@@ -67,76 +120,27 @@
             font-size: 2em;
             margin: 0;
         }
-
-        .half {
-            width: 100%;
-            padding: 20px;
-            margin-bottom: 20px;
+        li::marker{
+            color: rgba(239, 193, 51, 1);
         }
-
-        .half.top {
-            background-color: rgba(255,255,255,255);
-            border: 5px solid white; 
-            border-radius: 7px;
-        }
-
-        .half.bottom {
-            background-color: rgba(241,245,255,255);
-            border: 5px solid white; 
-            border-radius: 7px;
-        }
-
-        .content-wrapper {
-            
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-         }
-        
-        .content-wrapper div {
-            flex: 1;
-            padding: 20px;
-            max-width: 100%; 
-            margin: 10px;
-            font-size: 18px; 
-            line-height: 1.6; 
-            text-align: justify; 
-        }
-
         footer {
             background-color: rgba(25, 55, 130, 1);
-            padding: 10px;
-            width: 97.8%;
+            padding: 10px 0;
             flex: 1;
             text-align: left; 
-            margin-left: 20px;
+            
         }
-        
         footer img{
             max-width: 150px;
             height: auto; 
-            
+            margin-left: 20px;
         }
 
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        .half.bottom h2 {
-            color: rgba(25, 55, 130, 1);
-        }
-
-        .gray-box {
-            border: 5px solid rgba(241,245,255,255);; 
-            border-radius: 7px;
-        }
     </style>
 </head>
 <body>
     <div id="header">
-
-        
+    
         <div id="header-title">
             <a href="home.html"><img src="data:image/png;base64,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" alt="Logo"></a>
         </div>
@@ -148,6 +152,7 @@
             <a href="index.html" class="nav-link">Platform</a>
         </nav>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('#navbar .nav-link');
@@ -162,93 +167,89 @@
 
     </script>
 
-    <div class="title-section">
-       About
+<div class="title-section">
+    INSTITUTIONAL R&I MAPPING SLIDE DECKS
+ </div>
+<div class="main-content">
+    <div class="image">
+        <img src="https://researchinformation.univ-tech.eu/static/media/institutional-slide-deck-copertina-landscape.f48a608f39a6ddfa97c6.png" alt="Main Image">
     </div>
- 
- <div class="containerAbout">
-    <div class="half top">
-        <div class="content-wrapper">
-            <div>
-                <div class="orange-box">
-                    <p>This website has been developed in the context of the European project EUt+ EXTRAS (EXperimentation to Transform Research Activities and Steering) and it’s a product of the task x4.1 “Perform an internal analysis of research collaborations among EUt+ partners and with the local ecosystems”.</p>
-                </div>
-                <div class="white-box">
-                 <p>
-                    As the description of the deliverable “Comprehensive report mapping trends and possible links within EUt+ and beyond” did not define exactly the final outcome, in order to make sure that the final product was answering the needs of the different partners and stakeholder, as well as being aligned with what was written in the bid, it was decided to follow a co-design approach.
-                </p>
-                </div>
-                <div class="orange-box">
-                <p>
-                 The co-design process started in November 2021 where a wide open discussion took place with the majority of the participants from the WPX4 brainstorming about all possible functions, products and targets responding to the content bid, as well as the trade-offs and connections with other tasks. 
-                </p>
-                </div>
-                <div class="white-box">
-                  <div id="popup-images">
-                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5pVNojhg804sprddOj7eAR1fwlOHtdU6T1A&s">
-                  </div>
-                </div>
-                
-            </div>
-            <div>
-                <div class="white-box">
-                <p>
-                    Following this initial discussion, bilateral meetings were run with the VPs of Research and Innovation (R&I) and the heads of R&I offices in order to better understand which were their specific needs and demands and which questions they wanted the platform to answer.
-                </p>
-                </div>
-                <div class="orange-box">
-                <p>
-                    After these bilateral meetings, a restitution meeting with all the VPs of Research and Innovation and the heads of R&I offices was held in Cartagena in February 2022 to summarise key findings and insights from the interviews. At the end of the meeting, the participants were asked to vote and rank their priorities in terms of the main functions of the platform and the needs it had to answer. 
-                </p>
-                </div>
-                <div class="white-box">
-                <p>
-                    As a result of the priority-setting generated through the voting, a proposal of a “R&I information toolkit” was then presented and validated, that comprised several different products and each of them answering different needs: 
-                </p>
-                </div>
-                <div class="orange-box">
-                <ul>
-                    <li>An interactive platform that allows to browse all the research and innovation activities of the eight partners;</li>
-                    <li>EUt+ R&I Mapping slide deck offering an overview of all the R&I activities of the eight partners;</li>
-                    <li>A set of institutional R&I mapping slide decks with key strategic graphs regarding each of the institutions.</li>
-                </ul>
-               </div>
-            </div>
+    <div class="text">
+        <p>Each of the institutional slide decks includes key charts and descriptive visualizations for every EUt+ member, offering a comprehensive summary of the R&I activities conducted by each institution.</p>
+    </div>
+    <div class="text2">
+        <p>The slide deck is divided into the following sections:</p>
+    
+    <ul>
+        <li>Context;</li>
+        <li>Institutional distinctive capacities;</li>
+        <li>Collaborations;</li>
+        <li>Societal and territorial challenges.</li>
+    </ul>
+   </div>
+</div>
+<div class="list">
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/utt_text.2582e4d8c96d7a4549a5.jpeg" alt="UTT">
+        <div class="content">
+            <p>University of Technology of Troyes</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/UTT%20R&I%20mapping%20slides.9cba46248c5b112b5e37.pdf" class="button" target="_blank">Read</a>
         </div>
     </div>
-    <div class="half bottom">
-        <div class="content-wrapper">
-            <div>
-                <h2>What is Topic Modeling?</h2>
-                <div class="gray-box">
-                <p>
-                    Topic Modelling (TM) is a technique that uses machine learning to automatically “discover” the topics from a collection of texts. TM allows to go beyond standard taxonomies of and to classify records from multiple sources in accordance with a common categorisation, that is not defined a-priori, but rather “emerges” from the specific corpus of texts.
-                </p>
-                </div>
-                <div class="orange-box">
-                <p>
-                    For example, Topic Modeling could be applied to a corpus of newspaper articles, which would result in the automatic cataloguing of articles into sections on Politics, Economy, Sports, etc. The labelling of the topics - therefore the process of giving a name to a topic by looking at the keywords and the documents associated with it - was done by external experts and it was reviewed and validated with key stakeholders from the eight universities.  
-                </p>
-                </div>
-            </div>
-            <div>
-                <div class="orange-box">
-                <p>
-                    A deep learning based model for natural language processing (BERT) is used to generate the document embeddings, namely vectorial representations of the texts in a high-dimensional vector space. Semantically similar texts are represented by close points in the vector space. The application of the K-Means clustering algorithm then creates groups of similar embeddings and makes it possible to extract the different topics contained in the text corpus.  
-                </p>
-                </div>
-                <div class="gray-box">
-                <p>
-                    For each publication, the reference text includes the title, abstract. In the case of projects, the title and the objective or description were used.  
-                </p>
-                </div>
-
-            </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/h_da_text.81f0851e4350c13f49d3.jpeg" alt="HDA">
+        <div class="content">
+            <p>Darmstadt University of Applied Sciences</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/H_DA%20R&I%20mapping%20slides.5f4722b63eea210a56fc.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/rtu_text.4ffcd4f9da8afdc82fbc.png" alt="RTU">
+        <div class="content">
+            <p>Riga Technical University</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/RTU%20R&I%20mapping%20slides.9b7b06fc05277c95aa1c.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/tudublin_text.f9ba72ae91f9f663c35d.jpeg" alt="TUD">
+        <div class="content">
+            <p>Technological University Dublin</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/TU%20Dublin%20R&I%20mapping%20slides.0d593a2758d7b8e4b7fa.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/tus_text.4f2e26bf7582338f9342.jpeg" alt="TUS">
+        <div class="content">
+            <p>Technical University of Sofia</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/TUS%20R&I%20mapping%20slides.61c17ed3aa412868694b.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/cut_text.79f1b09b327337124662.jpeg" alt="CUT">
+        <div class="content">
+            <p>Cyprus University of Techonology</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/CUT%20R&I%20mapping%20slides.aa7634b602d4017b51eb.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/upct_text.cae7a5f33c3e1488c4f0.jpeg" alt="UPCT">
+        <div class="content">
+            <p>Universidad Politécnica de Cartagena</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/UPCT%20R&I%20mapping%20slides.f89fb80ab86576ce3d7c.pdf" class="button" target="_blank">Read</a>
+        </div>
+    </div>
+    <div class="list-item">
+        <img src="https://researchinformation.univ-tech.eu/static/media/utcn_text.cbd6e89318b694cb7cb7.jpeg" alt="UTCN">
+        <div class="content">
+            <p>Technical University of Cluj-Napoca</p>
+            <a href="https://researchinformation.univ-tech.eu/static/media/UTCN%20R&I%20mapping%20slides.8cbaaff480de277ecf1f.pdf" class="button" target="_blank">Read</a>
         </div>
     </div>
 </div>
+
 <footer>
     <img src="data:image/png;base64,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" class="logo-footer" alt="my logo" />
 </footer>
+
 </body>
 </html>
