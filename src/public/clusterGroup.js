@@ -1,72 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let map = null;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Leaflet map
+    let map = L.map('map').setView([51.505, -0.09], 4.5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-    // Try to retrieve existing map instance
-    const existingMapElement = document.getElementById('map');
-    if (existingMapElement) {
-        map = existingMapElement._leaflet_map || null;
-    }
+    const markers = L.markerClusterGroup(); // Define the marker cluster group globally
+    let allMarkers = L.layerGroup(); // Layer group for all markers
+    let clusteredMarkers = L.markerClusterGroup(); // Clustered markers
+    let allData = []; // Store fetched data globally
 
-    // If map doesn't exist, initialize Leaflet
-    if (!map) {
-        map = L.map('map').setView([51.505, -0.09], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    }
-    let clusterGroups = {};
-    let plainMarkers = L.layerGroup();
-
-    function addContractMarkers(data, useClustering) {
-        for (const key in clusterGroups) {
-            clusterGroups[key].clearLayers();
-        }
-        plainMarkers.clearLayers();
-
-        const groupedContracts = data.reduce((acc, contract) => {
-            const objective = contract.Objectives || 'No Objectives';
-            if (!acc[objective]) {
-                acc[objective] = [];
-            }
-            acc[objective].push(contract);
-            return acc;
-        }, {});
-
-        Object.keys(groupedContracts).forEach(objective => {
-            if (!clusterGroups[objective]) {
-                clusterGroups[objective] = L.markerClusterGroup();
-            }
-            groupedContracts[objective].forEach(contract => {
-                const location = contract['Counterparty location'];
-                if (location && location.lat && location.lng) {
-                    const marker = L.marker([location.lat, location.lng]);
-                    let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
-                    popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
-                    marker.bindPopup(popupContent);
-
-                    if (useClustering) {
-                        clusterGroups[objective].addLayer(marker);
-                    } else {
-                        plainMarkers.addLayer(marker);
-                    }
-                }
-            });
-
-            if (useClustering) {
-                map.addLayer(clusterGroups[objective]);
-            }
-        });
-
-        if (!useClustering) {
-            map.addLayer(plainMarkers);
-        }
-    }
-
-    // Fetch contracts data and populate map
+    // Fetch contracts data and populate map initially
     fetch('/api/contracts')
         .then(response => response.json())
         .then(data => {
-            addContractMarkers(data, false);
+            allData = data;
+            addMarkers(data, false); // Initially add markers without clustering
 
             const totalCount = data.length;
             document.getElementById('contractsCount').textContent = `Total Contracts: ${totalCount}`;
@@ -74,15 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Event listener for checkbox change
             document.getElementById('clusterToggle').addEventListener('change', (event) => {
                 const useClustering = event.target.checked;
-                if (useClustering) {
-                    map.removeLayer(plainMarkers);
-                    addContractMarkers(data, true);
-                } else {
-                    for (const key in clusterGroups) {
-                        map.removeLayer(clusterGroups[key]);
-                    }
-                    addContractMarkers(data, false);
-                }
+                addMarkers(allData, useClustering);
             });
         });
 
@@ -91,4 +32,92 @@ document.addEventListener('DOMContentLoaded', () => {
         const contract = JSON.parse(unescape(contractJson));
         alert(`Showing details for contract with ${contract.Counterparty}`);
     };
+
+    function addMarkers(data, useClustering) {
+        // Clear existing markers and marker clusters
+        allMarkers.clearLayers();
+        clusteredMarkers.clearLayers();
+        map.removeLayer(allMarkers);
+        map.removeLayer(clusteredMarkers);
+
+        if (useClustering) {
+            // Group contracts by objectives
+            const groupedContracts = data.reduce((acc, contract) => {
+                const objective = contract.Objectives || 'No Objectives';
+                if (!acc[objective]) {
+                    acc[objective] = [];
+                }
+                acc[objective].push(contract);
+                return acc;
+            }, {});
+
+            // Add markers to respective clusters
+            Object.keys(groupedContracts).forEach(objective => {
+                const clusterGroup = L.markerClusterGroup(); // Create a new cluster group for each objective
+                groupedContracts[objective].forEach(contract => {
+                    const location = contract['Counterparty location'];
+                    if (location && location.lat && location.lng) {
+                        const marker = L.marker([location.lat, location.lng]);
+                        let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+
+                        if (contract.images && contract.images.length > 0) {
+                            popupContent += '<div class="popup-images">';
+                            contract.images.forEach((image, index) => {
+                                if (index === 0) {
+                                    popupContent += `<img src="${image}" alt="Image ${index + 1}" class="active">`;
+                                } else {
+                                    popupContent += `<img src="${image}" alt="Image ${index + 1}">`;
+                                }
+                            });
+                            popupContent += '<div class="slideshow-controls">';
+                            popupContent += '<span class="prev" onclick="plusSlides(-1)">&#10094; Prev</span>';
+                            popupContent += '<span class="next" onclick="plusSlides(1)">Next &#10095;</span>';
+                            popupContent += '</div></div>';
+                        }
+
+                        popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+
+                        marker.bindPopup(popupContent);
+                        clusterGroup.addLayer(marker);
+                    }
+                });
+                clusteredMarkers.addLayer(clusterGroup);
+            });
+
+            // Add clustered markers to the map
+            map.addLayer(clusteredMarkers);
+        } else {
+            // Add plain markers to the map
+            data.forEach(contract => {
+                const location = contract['Counterparty location'];
+                if (location && location.lat && location.lng) {
+                    const marker = L.marker([location.lat, location.lng]);
+                    let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
+
+                    if (contract.images && contract.images.length > 0) {
+                        popupContent += '<div class="popup-images">';
+                        contract.images.forEach((image, index) => {
+                            if (index === 0) {
+                                popupContent += `<img src="${image}" alt="Image ${index + 1}" class="active">`;
+                            } else {
+                                popupContent += `<img src="${image}" alt="Image ${index + 1}">`;
+                            }
+                        });
+                        popupContent += '<div class="slideshow-controls">';
+                        popupContent += '<span class="prev" onclick="plusSlides(-1)">&#10094; Prev</span>';
+                        popupContent += '<span class="next" onclick="plusSlides(1)">Next &#10095;</span>';
+                        popupContent += '</div></div>';
+                    }
+
+                    popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
+
+                    marker.bindPopup(popupContent);
+                    allMarkers.addLayer(marker);
+                }
+            });
+
+            // Add all markers layer group to map
+            map.addLayer(allMarkers);
+        }
+    }
 });

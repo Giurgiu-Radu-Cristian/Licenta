@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contracts Map</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -19,6 +22,8 @@
             height: auto;
             margin: 5px;
         }
+     
+    
         
     </style>
 </head>
@@ -27,14 +32,14 @@
     <div id="header">
 
         <div id="header-title">
-            <h2>Eut+ Quadruple helix partners</h2>
+            <a href="home.html"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAScAAAA1CAYAAAADMy1lAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAA1RSURBVHgB7Z3feds4EsCHubxHV0F4L/fdW5QKgq0gcgXmVmBvBaEriLeCYyo4pQJTFUR+2+9elunALmCNxQgDCYIAkKL4T9b8vg+WSfylBA4HgwGYwBkipUzVx5zCjD4NlRXWSZKsgWGYsyOBM0EJJBRAmQoLFd4fkfVZhaUKhRJUJXQACcc0EI0C8Ql6oKbeqfHEDwbmVaNuSKFCKbsByxFwIqqMPFKHgJ6oqXdqlMAwJ/AGJorq3HPq4A8qfIJuwHIeVLmFCjNgGGayTFI4KcGRq48f0J1QcrlWAbWoFBiGmSRvYUKQNoP2ob6Eks0HFdYooPqyETEM057JaE5SG7xLGEYwGd6B1qB4iMcwE2MSmpMlmN4dkW1FeUpPnHEzWDQoEzWoXIVbYBhmMowunEhrKaCZYEK3gHsMNUOx0ir7lkKs/BuVdtmVq8FI/ATt2zUV2I2AOW+UUFg3nJrO2w6/0K7UoJ7yiPKm6EqQA8O8IkbVnOiG+lCTDDWCxSkOfSpvRUKjjNT3SWrjeAXMxeB7mNgaNMVXpl9IbYIAuz+6ZYQ0cJUOzQwzFV/UtcMtg+p1H84HDr+mHE/+7UoKE0dpe3MaPlukdq6sYy07NFZLrUHFaGR3kqw5vRp8X6QnPreOcQKlrCljr99K8tmz4vH/eU0ZlRPvc0ROnTRzGeiHcv9+S606BUyUMWfr7mviH1UQXUp1evr9HkmyAOYSWSUW0I47yvsNtHZuCx/s66kKv1BIwd//V1TGlQrvleDIfPEWlRMv6BNts7G+fBb9fBThRF96bDiHQ7lOBZNFTCgO6cbAvE5K+rQ1fuxXJQ6naEhVQryvmTKOFSKZCt8pfygv3ltnMTM9luaU18Qv+hoH09PmJzDMDjPsKj3aSlNw2FSAfvg9q362dOKrwP970JArp8MCwu28d/KhMMQHfknhvfSvgFhS3BwmzuAGcamNgrFdBe4GWM1ehdqAP/KlGQhjdoe+3Svkj/+kEN5poUo+/lFB/+DvXZo6oR0p6KHcE+wP6Y4Btak/QQ/LvnkEXKydCyedOeeOFLDMjMKkGWO2LovE/VQ/SA7M0DxE4nrdVuflzUumKvjii1OW6Tuo17K7oIr0OxQUwjpGAbLypCvo8wuldwXLPPC/DdpZs8jDOdZOI5y+Wucy8JsxjICaNIMKJ1I9P0eS5DAMwRnAS9OamA0zR3u0p9cL0E66ePOndK4MlIOCIMM8cn/NJtqBcNhnbD0CtOHcpW4PrFg7P1M9RhhhXZ8DIwFMcw0TZ2ibk4jEPfv8P7rGGpszjAH7w4MV3Jk21Gj+B1oreYTApAoJAbMaIbeiMtDaylcKBbQzSnvbSYITWVpG94LOLTztRAE4ebvr0MM6EYkrYBhiMyArYC6KOtcBmkCZS4/zpa8MshMlTjwKrcz4S3lcAJq0Q0TifHXunSOBZR+nMHGGFk4xQ2EJw5DD+G1gzowuJmkSXn1wFEMP64K+HZ6Zic6hJ1dsprD3NjAM04zBhJOML0N5hP7rzyAwK0T8THhDfoaZDENqTrEhXW8zZCgUyWHtvzVJc2AYZjJMZZvezjUW0tQy0LMida+SWg0xU8hMD5qa307hu4ZvuVvNv0ljHW+n8WVkZwMrfWXbnOThbgfBMqx2zdzznusx6Q7cEmrauS3fwVx3CtqVwr5u77VF2pZSnZUnTrjn3kYa1TUxzWnW0epocy0Cmq+TQye7Y6d1U2Ci1Hh+b3mBl1iaVJUjoJ5TPMlxSh5naQUd39OnOZ5TGuwnM+sYF/CWVhkuZmZsRvG44HzTz6iv47lfYTdL7ZaBU/2pdYzt+kT5gdq8cARFCZabjDq3cmb5Yu3clu9g2p1SfvTPyigOz6OpBL+LCgJYS3Ku6RjLuHX8rw7a9jbSqCG5hvGcwm5b2JpSYKLEPL9tknjctXzzUtsvBvIkf0f+RD4TBN6cKLTQh+k3sEYCtJcY2lQxr3kIbv2SnHLwpi3of189j1QG5r+B/e2l8RwKpjsqF49nnnZmoO+1vXZSOTPPdVR0HbieD508r2liyfh0rZL6JU4oYwSVCbDzYs+cdPb1T+vtKyPwa8vh3ByYSwM1pww8Dph045rDtedmxeMbudvMUKjw6PHcrmpu9CeqC4UGCqfUl4getutAO4WvndYwNnYdG69z+sS2u86mITDPN1XePdUhwO9vuHf9k32pZs9gR2slmEhFPeZFDMzroAR9k83geAr6FNYKhcKTDuNzCqknfkbam8m71byoL+NQ8ItK8yRP2NY6RKIFqxnWoYD6Xqc1WbsfVNZpFIS+e8i+fnGJwslsYldAOwQwl4gRBAs4EtJKzAZwJn/pSZqC7l8YfIIFhRouo0EhefBwJa9vtGNVoIfUJXRPDlqwYDjWVltHCrvrTy9JOOFTBX/Q+Yn+TEd3TmbSPDvHaSBdBfrB1vb3R+EmKPwM9MECDdgUfPFoBL+KtRMFFvZx0IbsD13v20TaE7Zj1WSGzroOW9iG2mRff/HahRMKJFRDr/Cpcqq7QINdFZjzA4XGJ6n3l09Bu51UgbRoM2k7pF9S3gWcsBKBVlKgcPhiD/3QyRj9+axz5vMJxmcj1GmPcwFaQH+vy4QG8QKGW1OWQnhWzryT7lTwx9jMMiTdr2XqWo19tbx5eVOqGbvadAngVLcMzBYnKwn1r+zCuqA9BWiB8Scdx/ohCoYDZ14p916K8ICH7kJeFCqU7B2EhRMKnC9WntBkZkbtLWBnZsBrwAfnjdWcb45vVW07eyID/Z3+oGMUrnldprfJgM6HJNVDwgl/tCKZ9uLIDJhGJB//KKHBQ++vx3/nScCVBQXTPz78P4ceoRmsFCxbkNMH8UGHU/Ab50OV9iPoIYo97PoFmrHJGzAi15WxfTCSe8KmLLNfkwoLGsLZ11EeWQeyvV5o0JYm0NBO0BKyKnL9lX1iUFcCy+cjtJ/SLUxUO2mwaJg5U2hKv4jEldaxd4oemtWzjsSVcETeQDu8LgRN66A0e9fbpC1NiSlCvraNYXMqInFZ19OfXUBPVh7SMcyAjCGcYsZAHNp1YXfqmgKaG0JTYBjmZAYXTpYjV4hrOaG3kNK+z8cs70mBYZiTmep765YBD9lBIQPe1yOzLYBhmJMZRTg10J42061j2p9IMNXtAeXjwxQEK9MMGSaPpKmcMtBHamnFr23nR0kvwgwdO3XMrGPhpBFUtnd5iq9cT/5SRpa3qHMFxW+u01yH+lx4vpeMzmXQA2M6YeJw6TkSv3l7qRxBQJ0gmAxTtJsxfu4orJzjwkm3suJyc5L6p/H+NvE441VBO7yaN/XJByq7AL08pbEzp9xt0zKD3dtf1k4aPH9N5V5RXSnGWc6ft9Y9mYP2di+gB0bblYB8RjLQa4VCoIBC6b1oOl17KlLvmnnTIClqfiGfLXxfWJbwBnaTJ6GXVJJG8CkJv7SyDMQJ0P30KulmH3x7Ya9NBloQCDyQ2p8SHS6bvqEa8wMtbQHS/r6iZmRtoof9+Xd1bGam3evJQQu4W8qPrjVX0BOjbplCXrO4BigmDHCI90Dp8oY/xNHQkwUFU5N32uHiSvzhYnsN4VKCdXLaOr5XT8yT/ETP764R1pDGdhYW+KeBYEqt/Cn4NavNA0/6zQLum4Yr+kRhU0I9qZN/bZ1fw269mzGnmOPtjprksLrRnkBrVatkgBeTjAqNg5vQ+VYQUtsLCtmceyvvfYP0nflH0bWHyKElscbDhWC+20Cci7DilnXfk9zZeUr7f08dxq5z66lHyn27lfCkCdqc5KHdS9j9Ru76lrDipKedwvc99MFUFv6iKtvkDSyoReFYG4d6KFBazYxJ/dKDjL54XKPUdBfOb5bKi+QQt5shX6ljCGDOmbtkR2md32gVsv6BuTYr7iHsxY3aCC6IzTxxbj8TcDy+Npb0ud09INFvDcY1dys3MV073quPfZtaJrETJtmfBNAK8QZZUEhttvaVu/2US9CqbhXIk8Juv5g22xLfuTaHhnYzoPoeVFrcJWFJbW0zPE2BmRol6AcmatG31CdO2ZbHu7iY6kGtJQXdd4QKz0cICGzPjdU285CtrHhk89CuMZ/0YlqZPLLZUGlIjACaeptzaEmsULgQZP2wDrV1MywrnXhjFjBDN+TWim/qSiDo/yf7mM7NqQ1P1mfmlOEOH0urzJTySeszd/LfW/Fr+r/0fB/B4WOXTG4PcRw20YUXMP52uKi+ZnVPQWqzme1gzpMyEncXicPf35gIBGjt9reE9ssmCidLAf46Kvr/FhyjOfVBY1THuDw53MGjgEPtuqL8FeXPqJ0H+akf4zk0lxiXhQIO8Z27HKS2CxVyHJ5kC01Exg3WfZNDS2KFAsMwfuTOq3UoUCC2ng2k9lZyeHJoSaxQYJiRmPw2vTRzINS//wLtB1I3O9YGNFSjWv1PVNFP8aUiA+WcyuujrQzDTBWp/UE2To6yPWsqYw49IrXLwlL2Tw4tiRUKDDMSQ+wf3DtSz0iksDMGCidJRcHsL77uy9M8htxt7g7Q/SumirbLZWRk5iXZf501wwzG30V/5i5pTbosAAAAAElFTkSuQmCC" alt="Logo"></a>
         </div>
     
-        <nav>
-            <a href="home.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="index.html">Platform</a>
+        <nav id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+            <a href="index.html" class="nav-link">Platform</a>
         </nav>
     </div>
     
@@ -42,41 +47,41 @@
     <div id="main">
         <div id="sidebar">
             <h2>Filters</h2>
-            <div class="filter-container">
+            <div class="filter-container orange-box">
                 <label for="universitySelect">Select University:</label>
                 <select id="universitySelect" multiple>
                     <option value="all">All</option>
                     <!-- Options will be populated dynamically -->
                 </select>
             </div>
-            <div class="filter-container">
+            <div class="filter-container white-box">
                 <label for="countrySelect">Select Country:</label>
                 <select id="countrySelect" multiple>
                     <option value="all">All</option>
                     <!-- Options will be populated dynamically -->
                 </select>
             </div>
-            <div class="filter-container">
+            <div class="filter-container orange-box">
                 <label for="typeSelect">Select Contract Type:</label>
                 <select id="typeSelect" multiple>
                     <option value="all">All</option>
                     <!-- Options will be populated dynamically -->
                 </select>
             </div>
-            <div class="filter-container">
+            <div class="filter-container white-box">
                 <label for="purposeSelect">Select Purpose:</label>
                 <select id="purposeSelect" multiple>
                     <option value="all">All</option>
                     <!-- Options will be populated dynamically -->
                 </select>
             </div>
-            <div class="filter-container">
+            <div class="filter-container orange-box">
                 <label for="heatmapToggle">Show Heatmap</label>
                 <input type="checkbox" id="heatmapToggle" checked>
             </div>
-            <label>
-                <input type="checkbox" id="clusterToggle" /> Group by Objectives
-            </label>
+            <div id="logo-container">
+                <img id="logo" src="eut_side.jpg" alt="Logo" onclick="openImageModal()">
+            </div>
         </div>
         <div id="map-container">
             <div id="map"></div>
@@ -90,6 +95,12 @@
             </div>
         </div>
     </div>
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeImageModal()">&times;</span>
+        <div class="modal-content">
+            <img id="fullImage" src="eut_side.jpg" alt="Full Size Image">
+        </div>
+    </div>
     
 
      <!-- jQuery JS -->
@@ -101,6 +112,14 @@
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('#navbar .nav-link');
+            const currentPage = window.location.pathname.split('/').pop();
+
+           links.forEach(link => {
+             if (link.getAttribute('href') === currentPage || link.getAttribute('href') === '') {
+            link.classList.add('current');
+                }
+            });
             const southWest = L.latLng(35.0, -25.0);
             const northEast = L.latLng(72.0, 45.0);
             const bounds = L.latLngBounds(southWest, northEast);
@@ -123,30 +142,8 @@
                 map.panInsideBounds(bounds, { animate: false });
             });
 
-            const heatmapData = [
-                [52.52, 13.405, 1],   // Berlin, Germany
-                [48.8566, 2.3522, 1], // Paris, France
-                [51.5074, -0.1278, 1],// London, UK
-                [41.9028, 12.4964, 1],// Rome, Italy
-                [40.4168, -3.7038, 1],// Madrid, Spain
-                [50.1109, 8.6821, 1], // Frankfurt, Germany
-                [45.4654, 9.1859, 1], // Milan, Italy
-                [55.7558, 37.6173, 1],// Moscow, Russia
-                [52.2297, 21.0122, 1],// Warsaw, Poland
-                [48.2082, 16.3738, 1],// Vienna, Austria
-                [59.3293, 18.0686, 1],// Stockholm, Sweden
-                [60.1699, 24.9384, 1],// Helsinki, Finland
-                [37.9838, 23.7275, 1],// Athens, Greece
-                [53.3498, -6.2603, 1],// Dublin, Ireland
-                [52.3667, 4.8945, 1], // Amsterdam, Netherlands
-                [50.8503, 4.3517, 1], // Brussels, Belgium
-                [47.4979, 19.0402, 1],// Budapest, Hungary
-                [42.6977, 23.3219, 1],// Sofia, Bulgaria
-                [45.8150, 15.9819, 1],// Zagreb, Croatia
-                [41.3275, 19.8187, 1],// Tirana, Albania
-            ];
-
-            const heatmapLayer = L.heatLayer(heatmapData, {
+           
+            const heatmapLayer = L.heatLayer([], {
                 radius: 70, // Increased radius for more visibility
                 blur: 80,   // Increased blur for more spread
                 maxZoom: 10,
@@ -191,9 +188,13 @@
             // Function to add markers to the map
             function addMarkers(data) {
                 markers.clearLayers();
+                const heatmapData = []; // Initialize heatmapData array
 
                 data.forEach(contract => {
-                    const location = contract['Counterparty location'];
+                    const location = {
+                      lat: contract.lat,
+                      lng: contract.lng
+                   };
                     if (location && location.lat && location.lng) {
                         const marker = L.marker([location.lat, location.lng]);
                         let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
@@ -219,10 +220,12 @@
 
                         marker.bindPopup(popupContent);
                         markers.addLayer(marker);
+                        heatmapData.push([location.lat, location.lng, 0.5]);
                     }
                 });
 
                 map.addLayer(markers); 
+                heatmapLayer.setLatLngs(heatmapData);
             }
             // Function to filter contracts based on selected criteria
             function filterContracts(data) {
@@ -353,6 +356,31 @@
                 modal.style.display = "none";
             }
         }
+        
+        function openImageModal() {
+            const modal = document.getElementById('imageModal');
+            const logo = document.getElementById('logo');
+            const fullImage = document.getElementById('fullImage');
+            
+            // Set the full-size image source to the logo's source
+            fullImage.src = logo.src;
+            
+            // Display the modal
+            modal.style.display = 'block';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+
+        // Close the modal if the user clicks outside of the modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
 
                   
     </script>

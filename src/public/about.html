@@ -3,137 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contracts Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <title>Home Page</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <style>
-        #map {
-            height: 600px;
+         .popup-images {
+            display: flex;
+            margin-top: 20px;
         }
-        .contracts-count {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: white;
-            padding: 5px;
-            border-radius: 5px;
-            z-index: 1000;
+        .popup-images img {
+            width: 150px;
+            height: auto;
+            margin: 10px;
+        }
+
+       
+        #header a.nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        #header a.nav-link.current {
+            color: orange;
+        }
+    
+        body {
+        margin: 0;
+        font-family: Fira Sans,Roboto,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; 
+        background-color: #ecf0f1; 
+
+        }
+
+        .containerAbout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 1000px; 
+            width: 100%;
+            padding: 20px;
+            margin: auto; 
+            box-sizing: border-box;
+        }
+
+        .title-section {
+            background-color: rgba(25, 55, 130, 1);
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 3.1em;
+            font-style: italic;
+            font-weight: 600;
+        }
+        .title-section h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .half {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .half.top {
+            background-color: rgba(255,255,255,255);
+            border: 5px solid white; 
+            border-radius: 7px;
+        }
+
+        .half.bottom {
+            background-color: rgba(241,245,255,255);
+            border: 5px solid white; 
+            border-radius: 7px;
+        }
+
+        .content-wrapper {
+            
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+         }
+        
+        .content-wrapper div {
+            flex: 1;
+            padding: 20px;
+            max-width: 100%; 
+            margin: 10px;
+            font-size: 18px; 
+            line-height: 1.6; 
+            text-align: justify; 
+        }
+
+        footer {
+            background-color: rgba(25, 55, 130, 1);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            flex: 1;
+            text-align: left; 
+            margin-left: 2%;
+        }
+        footer img{
+            max-width: 150px;
+            height: auto; 
+            
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .half.bottom h2 {
+            color: rgba(25, 55, 130, 1);
+        }
+
+        .gray-box {
+            border: 5px solid rgba(241,245,255,255);; 
+            border-radius: 7px;
         }
     </style>
 </head>
 <body>
-
     <div id="header">
 
+        
         <div id="header-title">
-            <h2>Eut+ Quadruple helix partners</h2>
+            <a href="home.html"><img src="data:image/png;base64,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" alt="Logo"></a>
         </div>
     
-        <nav>
-            <a href="home.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="index.html">Platform</a>
+        <nav id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+            <a href="index.html" class="nav-link">Platform</a>
         </nav>
     </div>
-    <div id="map"></div>
-    <div class="contracts-count">
-        <label>
-            <input type="checkbox" id="clusterToggle" /> Group by Objectives
-        </label>
-        <div id="contractsCount">Loading...</div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize the map
-            const map = L.map('map').setView([51.505, 10.09], 4.5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+    const links = document.querySelectorAll('#navbar .nav-link');
+    const currentPage = window.location.pathname.split('/').pop();
 
-            let clusterGroups = {};
-            let plainMarkers = L.layerGroup();
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPage || link.getAttribute('href') === '') {
+            link.classList.add('current');
+        }
+    });
+});
 
-            // Function to add markers to the map
-            function addMarkers(data, useClustering) {
-                for (const key in clusterGroups) {
-                    clusterGroups[key].clearLayers();
-                }
-                plainMarkers.clearLayers();
-
-                const groupedContracts = data.reduce((acc, contract) => {
-                    const objective = contract.Objectives || 'No Objectives';
-                    if (!acc[objective]) {
-                        acc[objective] = [];
-                    }
-                    acc[objective].push(contract);
-                    return acc;
-                }, {});
-
-                Object.keys(groupedContracts).forEach(objective => {
-                    if (!clusterGroups[objective]) {
-                        clusterGroups[objective] = L.markerClusterGroup();
-                    }
-                    groupedContracts[objective].forEach(contract => {
-                        const location = contract['Counterparty location'];
-                        if (location && location.lat && location.lng) {
-                            const marker = L.marker([location.lat, location.lng]);
-                            let popupContent = `<b>${contract.University}</b><br>${contract.Counterparty}<br>${contract.address || 'No address available'}`;
-                            popupContent += `<br><button onclick="showContractDetails('${escape(JSON.stringify(contract))}')">Show Details</button>`;
-                            marker.bindPopup(popupContent);
-
-                            if (useClustering) {
-                                clusterGroups[objective].addLayer(marker);
-                            } else {
-                                plainMarkers.addLayer(marker);
-                            }
-                        }
-                    });
-
-                    if (useClustering) {
-                        map.addLayer(clusterGroups[objective]);
-                    }
-                });
-
-                if (!useClustering) {
-                    map.addLayer(plainMarkers);
-                }
-            }
-
-            // Fetch contracts data and populate map
-            fetch('/api/contracts')
-                .then(response => response.json())
-                .then(data => {
-                    addMarkers(data, false);
-
-                    const totalCount = data.length;
-                    document.getElementById('contractsCount').textContent = `Total Contracts: ${totalCount}`;
-
-                    // Event listener for checkbox change
-                    document.getElementById('clusterToggle').addEventListener('change', (event) => {
-                        const useClustering = event.target.checked;
-                        if (useClustering) {
-                            map.removeLayer(plainMarkers);
-                            addMarkers(data, true);
-                        } else {
-                            for (const key in clusterGroups) {
-                                map.removeLayer(clusterGroups[key]);
-                            }
-                            addMarkers(data, false);
-                        }
-                    });
-                });
-
-            // Dummy function for contract details modal
-            window.showContractDetails = function(contractJson) {
-                const contract = JSON.parse(unescape(contractJson));
-                alert(`Showing details for contract with ${contract.Counterparty}`);
-            };
-        });
     </script>
+
+    <div class="title-section">
+       About
+    </div>
+ 
+ <div class="containerAbout">
+    <div class="half top">
+        <div class="content-wrapper">
+            <div>
+                <div class="orange-box">
+                    <p>This website has been developed in the context of the European project EUt+ EXTRAS (EXperimentation to Transform Research Activities and Steering) and it’s a product of the task x4.1 “Perform an internal analysis of research collaborations among EUt+ partners and with the local ecosystems”.</p>
+                </div>
+                <div class="white-box">
+                 <p>
+                    As the description of the deliverable “Comprehensive report mapping trends and possible links within EUt+ and beyond” did not define exactly the final outcome, in order to make sure that the final product was answering the needs of the different partners and stakeholder, as well as being aligned with what was written in the bid, it was decided to follow a co-design approach.
+                </p>
+                </div>
+                <div class="orange-box">
+                <p>
+                 The co-design process started in November 2021 where a wide open discussion took place with the majority of the participants from the WPX4 brainstorming about all possible functions, products and targets responding to the content bid, as well as the trade-offs and connections with other tasks. 
+                </p>
+                </div>
+                <div class="white-box">
+                  <div id="popup-images">
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5pVNojhg804sprddOj7eAR1fwlOHtdU6T1A&s">
+                  </div>
+                </div>
+                
+            </div>
+            <div>
+                <div class="white-box">
+                <p>
+                    Following this initial discussion, bilateral meetings were run with the VPs of Research and Innovation (R&I) and the heads of R&I offices in order to better understand which were their specific needs and demands and which questions they wanted the platform to answer.
+                </p>
+                </div>
+                <div class="orange-box">
+                <p>
+                    After these bilateral meetings, a restitution meeting with all the VPs of Research and Innovation and the heads of R&I offices was held in Cartagena in February 2022 to summarise key findings and insights from the interviews. At the end of the meeting, the participants were asked to vote and rank their priorities in terms of the main functions of the platform and the needs it had to answer. 
+                </p>
+                </div>
+                <div class="white-box">
+                <p>
+                    As a result of the priority-setting generated through the voting, a proposal of a “R&I information toolkit” was then presented and validated, that comprised several different products and each of them answering different needs: 
+                </p>
+                </div>
+                <div class="orange-box">
+                <ul>
+                    <li>An interactive platform that allows to browse all the research and innovation activities of the eight partners;</li>
+                    <li>EUt+ R&I Mapping slide deck offering an overview of all the R&I activities of the eight partners;</li>
+                    <li>A set of institutional R&I mapping slide decks with key strategic graphs regarding each of the institutions.</li>
+                </ul>
+               </div>
+            </div>
+        </div>
+    </div>
+    <div class="half bottom">
+        <div class="content-wrapper">
+            <div>
+                <h2>What is Topic Modeling?</h2>
+                <div class="gray-box">
+                <p>
+                    Topic Modelling (TM) is a technique that uses machine learning to automatically “discover” the topics from a collection of texts. TM allows to go beyond standard taxonomies of and to classify records from multiple sources in accordance with a common categorisation, that is not defined a-priori, but rather “emerges” from the specific corpus of texts.
+                </p>
+                </div>
+                <div class="orange-box">
+                <p>
+                    For example, Topic Modeling could be applied to a corpus of newspaper articles, which would result in the automatic cataloguing of articles into sections on Politics, Economy, Sports, etc. The labelling of the topics - therefore the process of giving a name to a topic by looking at the keywords and the documents associated with it - was done by external experts and it was reviewed and validated with key stakeholders from the eight universities.  
+                </p>
+                </div>
+            </div>
+            <div>
+                <div class="orange-box">
+                <p>
+                    A deep learning based model for natural language processing (BERT) is used to generate the document embeddings, namely vectorial representations of the texts in a high-dimensional vector space. Semantically similar texts are represented by close points in the vector space. The application of the K-Means clustering algorithm then creates groups of similar embeddings and makes it possible to extract the different topics contained in the text corpus.  
+                </p>
+                </div>
+                <div class="gray-box">
+                <p>
+                    For each publication, the reference text includes the title, abstract. In the case of projects, the title and the objective or description were used.  
+                </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <img src="data:image/png;base64,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" class="logo-footer" alt="my logo" />
+</footer>
 </body>
 </html>

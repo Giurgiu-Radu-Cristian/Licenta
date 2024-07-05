@@ -4,12 +4,12 @@ const contractSchema = new mongoose.Schema({
     contractId: { type: String, required: true },
     University: { type: String, required: true },
     Counterparty: { type: String, required: true },
-    "Counterparty location": {
-        city: { type: String, required: true },
-        country: { type: String, required: true },
+
+        City: { type: String, required: true },
+        Country: { type: String, required: true },
         lat: { type: Number, required: true },
-        lng: { type: Number, required: true }
-    },
+        lng: { type: Number, required: true },
+    
     images: [String],
     counterpartyDomain: { type: String, required: true },
     "Type of contract": { type: String, required: true },
